@@ -29,11 +29,12 @@ public class ChatController {
 
 	@PostMapping("/send")
 	public void send(@RequestBody Message message) {
-        for (SseEmitter sseEmitter : this.sseEmitters) {
-			String dateTime = message.getDateTime()
-					.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
-			String messageStr = dateTime + " [" + message.getName() + "]: " + message.getMessage();
-            try {
+		String dateTime = message.getDateTime()
+				.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
+		String messageStr = dateTime + " [" + message.getName() + "]: " + message.getMessage();
+
+		for (SseEmitter sseEmitter : this.sseEmitters) {
+			try {
 				sseEmitter.send(messageStr, MediaType.APPLICATION_JSON);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
