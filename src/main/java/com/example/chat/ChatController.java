@@ -1,6 +1,5 @@
 package com.example.chat;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +22,7 @@ public class ChatController {
 	public SseEmitter connect() {
 		SseEmitter sseEmitter = new SseEmitter();
 		sseEmitters.add(sseEmitter);
-		sseEmitter.onTimeout(() -> sseEmitters.remove(sseEmitter));
+		sseEmitter.onCompletion(() -> sseEmitters.remove(sseEmitter));
 		return sseEmitter;
 	}
 
@@ -36,8 +35,7 @@ public class ChatController {
 		for (SseEmitter sseEmitter : this.sseEmitters) {
 			try {
 				sseEmitter.send(messageStr, MediaType.APPLICATION_JSON);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
         }
