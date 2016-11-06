@@ -1,8 +1,8 @@
 package com.example.chat;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequestMapping("/chat")
 public class ChatController {
 
-	private List<SseEmitter> sseEmitters = new ArrayList<>();
+	private List<SseEmitter> sseEmitters = new CopyOnWriteArrayList<>();
 
 	@GetMapping("/connect")
 	public SseEmitter connect() {
@@ -30,7 +30,8 @@ public class ChatController {
 	public void send(@RequestBody Message message) {
 		String dateTime = message.getDateTime()
 				.format(DateTimeFormatter.ofPattern("MM/dd HH:mm"));
-		String messageStr = dateTime + " [" + message.getName() + "]: " + message.getMessage();
+		String messageStr = dateTime + " [" + message.getName() + "]: "
+				+ message.getMessage();
 
 		for (SseEmitter sseEmitter : this.sseEmitters) {
 			try {
@@ -38,8 +39,6 @@ public class ChatController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-        }
+		}
 	}
-
-
 }
